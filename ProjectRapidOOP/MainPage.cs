@@ -11,14 +11,14 @@ using System.Windows.Forms;
 
 namespace ProjectRapidOOP
 {
-    public partial class Form1 : Form
+    public partial class MainPage : Form
     {
         private Character player;
         private Character opponent;
         private Battle battle;
         private List<Character> enemies;
 
-        public Form1()
+        public MainPage()
         {
             InitializeComponent();
             InitializeEnemies();
@@ -30,41 +30,41 @@ namespace ProjectRapidOOP
             // Create attacks for the player
             List<Attack> playerAttacks = new List<Attack>
             {
-                new Attack("Giga Drain", 1000, "Grass", "Drain"),
+                new Attack("Giga Drain", 400, "Grass", "Drain"),
                 new Attack("Attack Down", 0, "Normal", "Attack Down"),
                 new Attack("Attack Up", 0, "Normal", "Attack Up"),
                 new Attack("Defense Up", 0, "Normal", "Defense Up")
             };
 
             // Create attacks for the enemies
-            List<Attack> goblinAttacks = new List<Attack>
+            List<Attack> redmonAttacks = new List<Attack>
             {
-                new Attack("Slash", 150, "Normal"),
-                new Attack("Defense Down", 0, "Normal", "Defense Down"),
+                new Attack("Flamethrower", 150, "Fire", "Attack Up"),
+                new Attack("Tail Whip", 0, "Normal", "Defense Down"),
                 new Attack("Quick Attack", 120, "Normal"),
-                new Attack("Taunt", 0, "Normal")
+                new Attack("Overheat", 0, "Fire", "Attack Down")
             };
 
-            List<Attack> orcAttacks = new List<Attack>
+            List<Attack> bluemonAttacks = new List<Attack>
             {
                 new Attack("Smash", 200, "Normal"),
                 new Attack("Attack Down", 0, "Normal", "Attack Down"),
                 new Attack("Roar", 0, "Normal", "Defense Down"),
-                new Attack("Club Swing", 180, "Normal")
+                new Attack("Hydro Pump", 300, "Water")
             };
 
-            List<Attack> dragonAttacks = new List<Attack>
+            List<Attack> yellowmonAttacks = new List<Attack>
             {
-                new Attack("Fire Breath", 300, "Fire"),
-                new Attack("Wing Attack", 200, "Normal"),
-                new Attack("Tail Whip", 150, "Normal"),
-                new Attack("Inferno", 400, "Fire")
+                new Attack("Hyper Fang", 300, "Normal"),
+                new Attack("Tackle", 50, "Normal"),
+                new Attack("Tail Whip", 0, "Normal", "Defense Down"),
+                new Attack("Extreme Speed", 200, "Normal", "Attack Up")
             };
 
             // Create enemy characters
-            Character bluemon = new Character("Bluemon", "Water", 1000, 25, 15, goblinAttacks, "Images/bluemon.png");
-            Character redmon = new Character("Redmon", "Fire", 1500, 30, 20, orcAttacks, "Images/redmon.png");
-            Character yellowmon = new Character("Yellowmon", "Normal", 2000, 40, 25, dragonAttacks, "Images/yellowmon.png");
+            Character bluemon = new Character("Bluemon", "Water", 400, 25, 15, redmonAttacks, "Images/bluemon.png");
+            Character redmon = new Character("Redmon", "Fire", 500, 30, 20, bluemonAttacks, "Images/redmon.png");
+            Character yellowmon = new Character("Yellowmon", "Normal", 600, 40, 25, yellowmonAttacks, "Images/yellowmon.png");
 
             // Add enemies to a list
             enemies = new List<Character> { bluemon, redmon, yellowmon };
@@ -74,7 +74,7 @@ namespace ProjectRapidOOP
             opponent = enemies[random.Next(enemies.Count)];
 
             // Initialize the player
-            player = new Character("Player", "Normal", 2000, 20, 20, playerAttacks, "Images/memon.png");
+            player = new Character("Player", "Normal", 550, 20, 20, playerAttacks, "Images/memon.png");
 
             // Update the button texts to match the player's moves
             btnAttack1.Text = playerAttacks[0].Name;
@@ -98,6 +98,7 @@ namespace ProjectRapidOOP
             // Update opponent's name and HP
             lblOpponentHp.Text = $"{opponent.Name} HP: {opponent.HP}";
 
+            // Create images for enemies and player
             string path = Path.Combine(Application.StartupPath, opponent.ImagePath);
             pictureBox1.Image = Image.FromFile(path);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -130,7 +131,6 @@ namespace ProjectRapidOOP
 
         private void ShowBattleResultForm()
         {
-            // Create an instance of the BattleResultForm
             var battleResultForm = new BattleResultForm();
 
             // Set the start position to center relative to Form1
@@ -150,6 +150,7 @@ namespace ProjectRapidOOP
             }
         }
 
+        // Difference moves to attack
         private void btnAttack1_Click(object sender, EventArgs e)
         {
             ExecuteAttack(player.Attacks[0]);

@@ -16,7 +16,7 @@ namespace ProjectRapidOOP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new MainPage());
         }
     }
 
@@ -92,7 +92,7 @@ namespace ProjectRapidOOP
         public string Name { get; set; }
         public int Damage { get; set; }
         public string Type { get; set; } // Normal, Fire, Water, Grass
-        public string Effect { get; set; } // "Confused", "Burn", "Wet", "Drain", "Defense Down", "Attack Up", "Defense Up", "Attack Down"
+        public string Effect { get; set; } // "Drain", "Defense Down", "Defense Up", "Attack Down", "Attack Up"
 
         public Attack(string name, int damage, string type, string effect = null)
         {

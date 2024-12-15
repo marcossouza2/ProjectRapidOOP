@@ -54,7 +54,7 @@ namespace ProjectRapidOOP
         public int PerformAttack(Attack attack, Character target, Character attacker)
         {
 
-            // Calculate effective defense percentage, capped at 80%
+            // Calculate the effective defense percentage, with a maximum limit of 80%
             double defensePercentage = Math.Min(target.Defense / 100.0, 0.8);
 
             // Apply defense buff or debuff logic based on the DefenseBuffCounter

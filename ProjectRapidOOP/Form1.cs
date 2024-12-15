@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,15 +16,17 @@ namespace ProjectRapidOOP
         private Character player;
         private Character opponent;
         private Battle battle;
+        private List<Character> enemies;
 
         public Form1()
         {
             InitializeComponent();
-            StartGame();
+            InitializeEnemies();
         }
 
-        private void StartGame()
+        private void InitializeEnemies()
         {
+
             // Create attacks for the player
             List<Attack> playerAttacks = new List<Attack>
             {
@@ -33,19 +36,46 @@ namespace ProjectRapidOOP
                 new Attack("Defense Up", 0, "Normal", "Defense Up")
             };
 
-            // Create attacks for the opponent
-            List<Attack> opponentAttacks = new List<Attack>
+            // Create attacks for the enemies
+            List<Attack> goblinAttacks = new List<Attack>
             {
-                new Attack("Defense UP", 0, "Normal", "Defense UP"),
-                new Attack("Attack Up", 0, "Normal", "Attack Up"),
-                new Attack("Attack Down", 0, "Normal", "Attack Down"),
-                new Attack("Defense Down", 0, "Normal", "Defense Down")
+                new Attack("Slash", 150, "Normal"),
+                new Attack("Defense Down", 0, "Normal", "Defense Down"),
+                new Attack("Quick Attack", 120, "Normal"),
+                new Attack("Taunt", 0, "Normal")
             };
 
-            // Initialize player and opponent
-            player = new Character("Player", "Normal", 2000, 20, 20, playerAttacks);
-            opponent = new Character("Opponent", "Fire", 2000, 20, 20, opponentAttacks);
-            
+            List<Attack> orcAttacks = new List<Attack>
+            {
+                new Attack("Smash", 200, "Normal"),
+                new Attack("Attack Down", 0, "Normal", "Attack Down"),
+                new Attack("Roar", 0, "Normal", "Defense Down"),
+                new Attack("Club Swing", 180, "Normal")
+            };
+
+            List<Attack> dragonAttacks = new List<Attack>
+            {
+                new Attack("Fire Breath", 300, "Fire"),
+                new Attack("Wing Attack", 200, "Normal"),
+                new Attack("Tail Whip", 150, "Normal"),
+                new Attack("Inferno", 400, "Fire")
+            };
+
+            // Create enemy characters
+            Character bluemon = new Character("Bluemon", "Water", 1000, 25, 15, goblinAttacks, "Images/bluemon.png");
+            Character redmon = new Character("Redmon", "Fire", 1500, 30, 20, orcAttacks, "Images/redmon.png");
+            Character yellowmon = new Character("Yellowmon", "Normal", 2000, 40, 25, dragonAttacks, "Images/yellowmon.png");
+
+            // Add enemies to a list
+            enemies = new List<Character> { bluemon, redmon, yellowmon };
+
+            // Pick a random enemy
+            Random random = new Random();
+            opponent = enemies[random.Next(enemies.Count)];
+
+            // Initialize the player
+            player = new Character("Player", "Normal", 2000, 20, 20, playerAttacks, "Images/memon.png");
+
             // Update the button texts to match the player's moves
             btnAttack1.Text = playerAttacks[0].Name;
             btnAttack2.Text = playerAttacks[1].Name;
@@ -62,8 +92,19 @@ namespace ProjectRapidOOP
 
         private void UpdateUI()
         {
+            // Update player HP
             lblPlayerHp.Text = $"Player HP: {player.HP}";
-            lblOpponentHp.Text = $"Opponent HP: {opponent.HP}";
+
+            // Update opponent's name and HP
+            lblOpponentHp.Text = $"{opponent.Name} HP: {opponent.HP}";
+
+            string path = Path.Combine(Application.StartupPath, opponent.ImagePath);
+            pictureBox1.Image = Image.FromFile(path);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            string path2 = Path.Combine(Application.StartupPath, player.ImagePath);
+            pictureBox2.Image = Image.FromFile(path2);
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
 
             // Only update the message if it's not already updated by ExecuteAttack
             if (!battle.IsBattleOver() && string.IsNullOrEmpty(txtMessage.Text))
@@ -71,6 +112,7 @@ namespace ProjectRapidOOP
                 txtMessage.Text = "Choose an action!";
             }
 
+            // If the battle is over, show a victory/defeat message
             if (battle.IsBattleOver())
             {
                 if (player.HP == 0)
@@ -82,6 +124,29 @@ namespace ProjectRapidOOP
                     txtMessage.Text += $"{opponent.Name} is knocked down! {player.Name} Wins";
                 }
 
+                ShowBattleResultForm();
+            }
+        }
+
+        private void ShowBattleResultForm()
+        {
+            // Create an instance of the BattleResultForm
+            var battleResultForm = new BattleResultForm();
+
+            // Set the start position to center relative to Form1
+            battleResultForm.StartPosition = FormStartPosition.CenterParent;
+
+            // Show the BattleResultForm as a modal dialog
+            battleResultForm.ShowDialog(this);
+
+            // If Yes was clicked in BattleResultForm, restart the game
+            if (battleResultForm.IsYesClicked)
+            {
+                InitializeEnemies(); // Reset the game state
+            }
+            else
+            {
+                Application.Exit(); // Exit the application if No was clicked
             }
         }
 
@@ -188,7 +253,7 @@ namespace ProjectRapidOOP
                 }
                 else
                 {
-                    target.AttackBuffCounter--;
+                    target.AttackBuffCounter--; // Reduce the target's attack buff counter
                     message += $"{target.Name}'s attack decreased!{Environment.NewLine}";
                 }
             }

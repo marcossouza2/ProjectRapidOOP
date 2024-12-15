@@ -31,10 +31,12 @@ namespace ProjectRapidOOP
         public int Defense { get; set; }
         public int OriginalDefense { get; set; }
         public List<Attack> Attacks { get; set; }
+        public string ImagePath { get; set; } // New property for the image path
+
         public int DefenseBuffCounter { get; set; } // Track number of times defense has been reduced
         public int AttackBuffCounter { get; set; } // Track number of times defense has been reduced
 
-        public Character(string name, string type, int hp, int attackPower, int defense, List<Attack> attacks)
+        public Character(string name, string type, int hp, int attackPower, int defense, List<Attack> attacks, string imagePath)
         {
             Name = name;
             Type = type;
@@ -45,6 +47,7 @@ namespace ProjectRapidOOP
             Attacks = attacks;
             DefenseBuffCounter = 0;
             AttackBuffCounter = 0;
+            ImagePath = imagePath;
 
         }
 

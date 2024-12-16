@@ -21,7 +21,7 @@ namespace ProjectRapidOOP
 
         private void btnNo_Click(object sender, EventArgs e)
         {
-            Application.Exit();  // Close the entire application if No is clicked
+            Application.Exit();
         }
     }
 
